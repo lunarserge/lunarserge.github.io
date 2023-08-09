@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Introduction &#8212; facere-sensum  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b3523f8e" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to facere-sensum’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> is a general-purpose metrics framework that helps put a meaningful number on anything. It allows to combine individual metrics into a higher-level metric that represents collective behavior as a single indicator.</p>
+<p>By doing that, <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> provides a formal way for product management to define priorities and goals for development work. On the receiving end, <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> enables development teams to determine where exactly their effort needs to focus to hit the goal.</p>
+<p>See below for the overall methodology description and <a class="reference internal" href="examples.html"><span class="doc">examples</span></a> section for a sample of its practical application.</p>
+<section id="the-approach">
+<h2>The Approach<a class="headerlink" href="#the-approach" title="Permalink to this heading">¶</a></h2>
+<p>The key idea behind <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> is that metrics can be combined into tree-like structures where leaf nodes represent individual metrics and joints represent collective metrics for subtrees growing from them. E.g., imagine you are tracking SEO (Search Engine Optimization) efficiency metric for your company. The company has several projects. Each project has a landing page that you want to be found by web searches using certain phrases (search terms). There are multiple search terms per project.</p>
+<p>Here we have several levels of metrics:</p>
+<ul class="simple">
+<li><p>On the lowest level there are individual metrics for how well specific project landing page is found using specific search term.</p></li>
+<li><p>Next level combines search terms for a particular project and yields a single-number metric for how well project landing page is found across <em>all</em> the search terms.</p></li>
+<li><p>Finally, the top level - top of the tree - is just one single number reflecting how well the company does SEO across <em>all</em> its projects.</p></li>
+</ul>
+<p>This example is using homogeneous metrics, but in practice metrics can get heterogeneous. E.g., you can imagine even higher level which combines SEO efficiency with something different like uptime metric for landing pages. To abstract away such differences, <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> is using normalized metric values at all levels. The values must be a number between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code>, with <code class="docutils literal notranslate"><span class="pre">0</span></code> indicating inferior performance, <code class="docutils literal notranslate"><span class="pre">1</span></code> indicating perfect performance and other values indicating varying level of performance in between. This is how it works at various levels:</p>
+<ul class="simple">
+<li><p>Lowest level metrics should be defined to support this directly. E.g., in the SEO example, lowest level metric (for project / search term pair) can be defined as <code class="docutils literal notranslate"><span class="pre">1</span></code> if the landing page shows up first in search results, 0.9 if it shows up second and so forth. The metric becomes <code class="docutils literal notranslate"><span class="pre">0</span></code> if the landing page is not found in the top ten search results.</p></li>
+<li><p>Higher level metrics are calculated automatically by <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> as a weighted sum of the corresponding lower-level metric values, with weights totaling to <code class="docutils literal notranslate"><span class="pre">1</span></code>. This happens on all levels above the lowest. Since lower-level metric values are between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> and weights are totaling to <code class="docutils literal notranslate"><span class="pre">1</span></code> this yields higher level metric values between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> as well:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}high\_level\_metric = \sum_{i=0}^{N}low\_level\_metric_i*weight_i\\\sum_{i=0}^{N}weight_i = 1\end{aligned}\end{align} \]</div>
+<p>While not a strict requirement, it is helpful to define lowest-level metrics such that ‘successful’ metric value is around <code class="docutils literal notranslate"><span class="pre">0.5</span></code> with higher values indicating performing above the business goal and lower values indicating performing below the business goal. If lowest-level metrics defined in this way then metrics on all levels can be used not only as a number that has relative value over time, but also as an indicator of being successful or not on an appropriate level.</p>
+<p>SEO efficiency metric is used here for illustrative purpose. In general, any kind of metrics can fit with this approach.</p>
+</section>
+<section id="use-by-product-management-teams">
+<h2>Use by Product Management Teams<a class="headerlink" href="#use-by-product-management-teams" title="Permalink to this heading">¶</a></h2>
+<p>Product management teams would use <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> to:</p>
+<ul class="simple">
+<li><p>Specify hierarchy of metrics.</p></li>
+<li><p>Define normalized lowest-level metrics.</p></li>
+<li><p>Define weights for calculating higher-level metrics.</p></li>
+<li><p>Set goals for metrics at the appropriate level.</p></li>
+</ul>
+<p>While metric weights on a particular level should total to <code class="docutils literal notranslate"><span class="pre">1</span></code>, specifying different relative weights would indicate that some metrics are more important than others to the overall success (more important metrics receive bigger weights).</p>
+<p>The goals can be set on any metric level, but it gets more interesting on higher levels since this gives development teams flexibility in deciding how to achieve it. E.g., in SEO example product management can specify goals for each combination of project / search term. But that would be micromanagement. It is better to set goals for higher-level metrics like SEO efficiency for a product across search terms or even one goal for overall SEO across products - and leave it to development to decide how to hit the goal.</p>
+</section>
+<section id="use-by-development-teams">
+<h2>Use by Development Teams<a class="headerlink" href="#use-by-development-teams" title="Permalink to this heading">¶</a></h2>
+<p>Development teams would use <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> to:
+* Understand if the goal is achievable.
+* Define focus areas and track execution.</p>
+<p>After the full parenthesis expansion, higher-level metric calculation on any level comes down to a sum of the lowest-level metrics with weights. For each of the lowest-level metrics the development team can assess how much it can be realistically improved. And then using weights and the full equation they can see if the higher-level goal will be achieved assuming such improvements in the lowest-level metrics.</p>
+<p>After negotiating the achievable goal with the product management, development team can determine specific focus areas. While improving each metric to the limit is the best if your team has infinite resources, in practice it is typically not needed if the overall goal was set reasonably. In this case the development team has the flexibility to decide which of the lower-level metrics should be improved and how much so that the overall goal is achieved. They will make this determination using ROI (return on investment) analysis. Typically, it is a good idea to look at lowest-level metrics that are easiest to improve while having bigger weight in the overall equation.</p>
+<p>Once the development team has a plan like this, they can use <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> to automatically update higher-level metrics to track the progress.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">facere-sensum</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-approach">The Approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-by-product-management-teams">Use by Product Management Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-by-development-teams">Use by Development Teams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to facere-sensum’s documentation!</a></li>
+      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Serge Lunev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/intro.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

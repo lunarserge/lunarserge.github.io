@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Examples &#8212; facere-sensum  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b3523f8e" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<section id="product-management-and-development-teams-workflow">
+<h2>Product Management and Development Teams Workflow<a class="headerlink" href="#product-management-and-development-teams-workflow" title="Permalink to this heading">¶</a></h2>
+<p>Let us use the same SEO example used in the <a class="reference internal" href="intro.html"><span class="doc">introduction</span></a> section but put actual actions and numbers on it. Imagine we have a company from the automobile industry. The company has two product lines: cars and trucks. Trucks are more important than cars for the company business. Key selling point for company products is safety. Plus, trucks are also known to be fuel-efficient.</p>
+<p>Here is how the work could evolve between product management and development teams. Since the problem at hand is SEO, the development team is probably from marketing department.</p>
+<section id="step-1-define-hierarchy-of-metrics">
+<h3>Step 1. Define Hierarchy of Metrics<a class="headerlink" href="#step-1-define-hierarchy-of-metrics" title="Permalink to this heading">¶</a></h3>
+<p>The organization has two product lines, so let us assume it has two separate landing pages marketing to different customer bases. The product management decides which search terms are important, so they resonate well with targeted customers. For this example, it may look like this:</p>
+<ul class="simple">
+<li><p>For ‘car’ landing page: ‘best car’, ‘safe car’</p></li>
+<li><p>For ‘trucks’ landing page: ‘best truck’, ‘safe truck’, ‘fuel-efficient truck’</p></li>
+</ul>
+<p>Together this produces the following hierarchy of metrics:</p>
+<img alt="_images/SEO-hierarchy.png" src="_images/SEO-hierarchy.png" />
+</section>
+<section id="step-2-define-normalized-lowest-level-metrics">
+<h3>Step 2. Define Normalized Lowest-Level Metrics<a class="headerlink" href="#step-2-define-normalized-lowest-level-metrics" title="Permalink to this heading">¶</a></h3>
+<p>Let us assume that the current results for search terms are:</p>
+<ul class="simple">
+<li><p>‘best car’: not found in top ten search results.</p></li>
+<li><p>‘safe car’: 8<sup>th</sup> on the list of search results.</p></li>
+<li><p>‘best truck’: 8<sup>th</sup> result.</p></li>
+<li><p>‘safe truck’: 5<sup>th</sup> result.</p></li>
+<li><p>‘fuel-efficient truck’: not found in top ten search results.</p></li>
+</ul>
+<p>Per <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code> rules this needs to be normalized so that metric values are between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code>. Product management decides that lowest-level metric is defined as <code class="docutils literal notranslate"><span class="pre">1</span></code> if the landing page shows up first in search results, <code class="docutils literal notranslate"><span class="pre">0.9</span></code> if it shows up second and so forth. The metric becomes <code class="docutils literal notranslate"><span class="pre">0</span></code> if the landing page is not found in the top ten search results. This yields the following current metric values for the lowest level of the picture above:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}SEO_{bestcar} = 0; SEO_{safecar} = 0.3\\SEO_{besttruck} = 0.3; SEO_{safetruck} = 0.6; SEO_{fuelefficienttruck} = 0\end{aligned}\end{align} \]</div>
+<p>Let assume that all these metrics created equal from the SEO success perspective and the company believes that being 6<sup>th</sup> on the list of search results for each of them individually is good enough. Being 6<sup>th</sup> would translate to normalized value of <code class="docutils literal notranslate"><span class="pre">0.5</span></code>. We see that SEO<sub>safetruck</sub> individually is doing well, but not the other metrics.</p>
+<p>In the real world you’d probably want to set a higher bar for key selling point metrics like SEO<sub>safecar</sub> or SEO<sub>safetruck</sub> and for these two specifically make being 2<sup>nd</sup> or 3<sup>rd</sup> search result correspond to metric value of <code class="docutils literal notranslate"><span class="pre">0.5</span></code>. We will refrain from that in this example to keep things simple. Notice, however, that lowest-level metrics do not need to use same scheme and can be defined individually. What matters is that in the end they have a value between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> with the midpoint being ‘successful’ performance from the business perspective.</p>
+</section>
+<section id="step-3-define-weights-for-calculating-higher-level-metrics">
+<h3>Step 3. Define Weights for Calculating Higher-Level Metrics<a class="headerlink" href="#step-3-define-weights-for-calculating-higher-level-metrics" title="Permalink to this heading">¶</a></h3>
+<p>The product management decides that:</p>
+<ul class="simple">
+<li><p>For SEO<sub>overall</sub>: since trucks business is more important than cars SEO<sub>trucks</sub> gets a weight of <code class="docutils literal notranslate"><span class="pre">0.7</span></code> and hence SEO<sub>cars</sub> gets the remaining weight of <code class="docutils literal notranslate"><span class="pre">0.3</span></code>.</p></li>
+<li><p>For SEO<sub>cars</sub>: safety is a key selling point, so SEO<sub>safecar</sub> gets a weight of <code class="docutils literal notranslate"><span class="pre">0.8</span></code> and hence SEO<sub>bestcar</sub> get the remaining weight of <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.</p></li>
+<li><p>Similarly for SEO<sub>trucks</sub>: SEO<sub>safetruck</sub> gets a weight of <code class="docutils literal notranslate"><span class="pre">0.5</span></code>, SEO<sub>fuelefficienttruck</sub> gets <code class="docutils literal notranslate"><span class="pre">0.3</span></code> and SEO<sub>besttruck</sub> gets remaining <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.</p></li>
+</ul>
+<p>Given these weights and current lowest-level metric values we are getting the following current values for higher level metrics, automatically computed by <code class="docutils literal notranslate"><span class="pre">facere-sensum</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}SEO_{cars} &amp;= SEO_{bestcar}*0.2 + SEO_{safecar}*0.8 \\
+           &amp;= 0*0.2 + 0.3*0.8 = 0.24\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}SEO_{trucks} &amp;= SEO_{besttruck}*0.2 + SEO_{safetruck}*0.5 + SEO_{fuelefficienttruck}*0.3 \\
+             &amp;= 0.3*0.2 + 0.6*0.5 + 0*0.3 \\
+             &amp;= 0.06 + 0.3 = 0.36\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}SEO_{overall} &amp;= SEO_{cars}*0.3 + SEO_{trucks}*0.7 \\
+              &amp;= 0.24*0.3 + 0.36*0.7 \\
+              &amp;= 0.072 + 0.252 = 0.324\end{split}\]</div>
+</section>
+<section id="step-4-set-goals-for-metrics-at-the-appropriate-level">
+<h3>Step 4. Set Goals for Metrics at the Appropriate Level<a class="headerlink" href="#step-4-set-goals-for-metrics-at-the-appropriate-level" title="Permalink to this heading">¶</a></h3>
+<p>Most of the lowest-level metrics (SEO<sub>bestcar</sub>, SEO<sub>safecar</sub>, SEO<sub>besttruck</sub> and SEO<sub>fuelefficienttruck</sub>) are below <code class="docutils literal notranslate"><span class="pre">0.5</span></code> success point, so the goals might be set for each of them individually to reach success. But that would be micromanagement. It is better to set higher-level goals.</p>
+<p>All three higher-level metrics (SEO<sub>cars</sub>, SEO<sub>trucks</sub> and SEO<sub>overall</sub>) are below <code class="docutils literal notranslate"><span class="pre">0.5</span></code> as well. In this example, product management decides that just one goal will be set on the top level for the SEO<sub>overall</sub>. Currently is has the value of <code class="docutils literal notranslate"><span class="pre">0.324</span></code>. The target is set for SEO<sub>overall</sub> to become <code class="docutils literal notranslate"><span class="pre">0.5</span></code> or higher which would indicate that the company generally improved SEO to a successful level across all its products.</p>
+</section>
+<section id="step-5-understand-if-the-goal-is-achievable">
+<h3>Step 5. Understand If the Goal is Achievable<a class="headerlink" href="#step-5-understand-if-the-goal-is-achievable" title="Permalink to this heading">¶</a></h3>
+<p>The marketing department concludes that there is some SEO webpage metadata / dark magic that can be applied to improve the search for ‘safe car’ and ‘fuel-efficient truck’ terms. Assuming that both can be optimized to become 5<sup>th</sup> search result and SEO is not getting worse for other terms, this is what we are looking at after potential improvement:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}SEO_{bestcar} = 0; SEO_{safecar} = 0.6\\SEO_{besttruck} = 0.3; SEO_{safetruck} = 0.6; SEO_{fuelefficienttruck} = 0.6\end{aligned}\end{align} \]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}SEO_{cars} &amp;= SEO_{bestcar}*0.2 + SEO_{safecar}*0.8 \\
+           &amp;= 0*0.2 + 0.6*0.8 = 0.48\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}SEO_{trucks} &amp;= SEO_{besttruck}*0.2 + SEO_{safetruck}*0.5 + SEO_{fuelefficienttruck}*0.3 \\
+             &amp;= 0.3*0.2 + 0.6*0.5 + 0.6*0.3 \\
+             &amp;= 0.06 + 0.3 + 0.18 = 0.54\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}SEO_{overall} &amp;= SEO_{cars}*0.3 + SEO_{trucks}*0.7 \\
+              &amp;= 0.48*0.3 + 0.54*0.7 \\
+              &amp;= 0.144 + 0.378 = 0.522\end{split}\]</div>
+<p>This analysis shows that the goal is achievable.</p>
+</section>
+<section id="step-6-define-focus-areas-and-track-execution">
+<h3>Step 6. Define Focus Areas and Track Execution<a class="headerlink" href="#step-6-define-focus-areas-and-track-execution" title="Permalink to this heading">¶</a></h3>
+<p>We can see now that the goal of <code class="docutils literal notranslate"><span class="pre">0.5</span></code> is achievable by focusing SEO on improving search for two out of five search terms. Overall, this gives marketing department a goal, a way to track it, and a focus so that they know exactly which pieces of the equation that should work with.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">facere-sensum</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#product-management-and-development-teams-workflow">Product Management and Development Teams Workflow</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Serge Lunev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/examples.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
